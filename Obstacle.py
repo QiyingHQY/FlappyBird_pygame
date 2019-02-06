@@ -56,10 +56,9 @@ class Obstacle(GameEntity):
     def mouseDownEvent(self, event):
 
         if event.button == 1:
-            if self.state==0:
-                self.state = 1
-                self.isPause = False
-                self.stateMachine.set_state("move")
+            if self.state == 1:
+                if self.isPause:
+                    self.isPause = False
         elif event.button == 3:
             if self.state == 1:
                 self.isPause = not self.isPause
@@ -72,7 +71,7 @@ class Obstacle(GameEntity):
         self.y = randint(0, 200) + 200
 
     def isIn(self, x, y, w,h):
-        if x+w>self.x and x<self.x:
+        if x+w>self.x and x<self.x+self.w-20:
             if y+h/2>self.y or y<self.y-150:
                 return True
 

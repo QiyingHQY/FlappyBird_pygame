@@ -34,7 +34,7 @@ class Bird(GameEntity):
         """
         self.color = 0
         self.timeCount = 0
-
+        self.countSpeed = 2
         """
         bird state
             0:keep
@@ -108,16 +108,16 @@ class Bird(GameEntity):
                 self.mouseDownEvent(event)
 
     def mouseDownEvent(self, event):
-        if event.button == 1:
-            if self.state != 0 and self.state != 4:
-                if self.isPause:
-                    self.isPause = False
+        if self.state != 0:
+            if event.button == 1:
+                if self.state != 4:
+                    if self.isPause:
+                        self.isPause = False
                     self.stateMachine.set_state("up")
-            if self.state != 4:
-                self.stateMachine.set_state("up")
-        elif event.button == 3:
-            if self.state != 0 and self.state != 4:
-                self.isPause = not self.isPause
+
+            elif event.button == 3:
+                if self.state != 0 and self.state != 4:
+                    self.isPause = not self.isPause
 
     def render(self):
         if self.state == 0:
@@ -144,10 +144,11 @@ class Bird(GameEntity):
         self.screen.blit(self.imgList_down[self.color][int(self.timeCount / 15)], (self.x, self.y))
 
     def render_dead(self):
-        self.screen.blit(self.imgList_dead[self.color][int(self.timeCount / 15)], (self.x+20, self.y))
+        self.screen.blit(self.imgList_dead[self.color][int(self.timeCount / 15)], (self.x + 20, self.y))
 
     def randColor(self):
         self.color = randint(0, 3)
+
 
 class BirdStateUp(State):
 
@@ -168,7 +169,8 @@ class BirdStateUp(State):
         self.count = 20
 
     def do_actions(self):
-        self.bird.timeCount = self.bird.timeCount % 59 + 1
+        self.bird.timeCount += self.bird.countSpeed
+        self.bird.timeCount %= 60
         self.bird.speed += self.bird.acceleration
         self.bird.y += self.bird.speed
         self.count -= 1
@@ -195,7 +197,8 @@ class BirdStateMid(State):
         self.count = 10
 
     def do_actions(self):
-        self.bird.timeCount = self.bird.timeCount % 59 + 1
+        self.bird.timeCount += self.bird.countSpeed
+        self.bird.timeCount %= 60
         self.bird.speed += self.bird.acceleration
         self.bird.y += self.bird.speed
         self.count -= 1
@@ -218,7 +221,8 @@ class BirdStateDown(State):
         self.bird.state = 3
 
     def do_actions(self):
-        self.bird.timeCount = self.bird.timeCount % 59 + 1
+        self.bird.timeCount += self.bird.countSpeed
+        self.bird.timeCount %= 60
         self.bird.speed += self.bird.acceleration
         self.bird.y += self.bird.speed
 
@@ -259,7 +263,8 @@ class BirdStateKeep(State):
         self.bird.state = 0
 
     def do_actions(self):
-        self.bird.timeCount = self.bird.timeCount % 59 + 1
+        self.bird.timeCount += self.bird.countSpeed
+        self.bird.timeCount %= 60
 
     def exit_actions(self):
         pass
@@ -270,20 +275,27 @@ class BirdStateDead(State):
     def __init__(self, bird):
         super().__init__("dead")
         self.bird = bird
+        self.count = 0
 
     def check_conditions(self):
         pass
 
     def entry_actions(self):
         self.bird.state = 4
+        self.count = 0
+        if self.bird.y > 410:
+            self.bird.y = 410
 
     def do_actions(self):
 
-        if self.bird.y < 410:
-            self.bird.timeCount = self.bird.timeCount % 59 + 1
-            self.bird.y += 8
+        if self.count < 20:
+            self.count += 1
         else:
-            self.bird.y = 410
+            if self.bird.y < 410:
+                self.bird.timeCount = self.bird.timeCount % 59 + 1
+                self.bird.y += 8
+            else:
+                self.bird.y = 410
 
     def exit_actions(self):
         pass

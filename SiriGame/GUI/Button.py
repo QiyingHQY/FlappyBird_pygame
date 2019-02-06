@@ -107,5 +107,3 @@ class Button(Widget):
         else:
             self.img_pressed = pressed
 
-    def Connect(self, fun):
-        self.connect = fun

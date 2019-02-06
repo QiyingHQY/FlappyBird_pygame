@@ -9,6 +9,7 @@ from random import randint
 import pygame
 from pygame.locals import *
 
+from Bird import Bird
 from PlayScene import PlayScene
 from SiriGame import GameScene
 from SiriGame.GUI import Button
@@ -21,6 +22,8 @@ class MenuScene(GameScene):
         super().__init__(gameobj)
 
         self.playScene = PlayScene(gameobj)
+
+        self.bird=Bird(self)
 
         self.btn_start = Button(self, 35, 350, 140, 78)
         self.btn_start.setImg(self.source.img_button_start, self.source.img_button_start_on,
@@ -37,6 +40,9 @@ class MenuScene(GameScene):
 
     def init(self,args=None):
         self.dayOrNight()
+        self.bird.init()
+        self.bird.x=170
+        self.bird.stateMachine.set_state("keep")
 
     def event(self, events):
         super().event(events)
@@ -75,7 +81,9 @@ class MenuScene(GameScene):
         else:
             self.screen.blit(self.source.img_night, (0, 0))
 
-        self.screen.blit(self.source.img_logo, (73, 150))
+        self.screen.blit(self.source.img_logo, (73, 100))
+
+        self.bird.render()
 
         self.btn_start.render()
         self.btn_rank.render()

@@ -150,3 +150,5 @@ class GameSource():
         """other"""
         self.img_logo = pygame.image.load("./source/image/other/logo.png").convert_alpha()
         self.img_icon = pygame.image.load("./source/image/other/icon.png").convert_alpha()
+        self.img_gameover = pygame.image.load("./source/image/other/gameOver.png").convert_alpha()
+        self.img_scorecard = pygame.image.load("./source/image/other/scorecard.png").convert_alpha()
